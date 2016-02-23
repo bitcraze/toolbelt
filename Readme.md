@@ -13,11 +13,12 @@ The toolbelt requires docker 1.9 or later.
 
 The toolbelt works on linux and OSX.
 
-For installation instructions run 
+The only installation needed is an alias in your .profile or .rc file. For 
+detailed instructions run 
 
         docker run --rm -it bitcraze/toolbelt        
         
-It is probably possible to use it on Windows as well but has not been tested. Please share if you do!
+It is probably possible to use it on Windows as well but it has not been tested. Please share if you do!
 
         TODO Windows
 
@@ -30,20 +31,22 @@ Assuming the alias 'tb' is set up as described in the installation instruction.
 To get a list of commands, use
 
         tb help
+        
+To execute tools in a module, the toolbelt should always be executed from the
+root of the module.
 
 ## Upgrading
 
-You need to upgrade from time to time to get the latest version. The upgrade is
- as simple as a docker pull and the toolbelt can do it for you.
+You need to upgrade from time to time to get the latest version of the toolbelt
+as well as the builders. The upgrade is as simple as a docker pull and the 
+toolbelt can do it for you.
 
-See the help for details.
-
-        tb help
+        tb update
 
 # How it works
 
 The toolbelt is designed to make it easy to modify, test and build Bitcraze projects.
-It is designed to remove the need to install tool chains, languages and 
+The goal is to remove the need to install tool chains, languages and 
 frameworks on the local computer. 
 
 It requires virtually no installation, only an alias.
