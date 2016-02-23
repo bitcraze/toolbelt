@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -e
+
+scriptDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+rootDir=${scriptDir}/../..
+srcDir=${scriptDir}/../../src
+
+if [ -e ${rootDir}/build_info.json ]; then
+    cp ${rootDir}/build_info.json ${srcDir}/toolbelt
+fi
+
+${scriptDir}/pep8
+${scriptDir}/test
+${scriptDir}/image $1

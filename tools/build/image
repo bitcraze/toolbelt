@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -e
+
+scriptDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+fullImageName=${1?"Error: Image name missing, you must add imageName[:tag]"}
+
+echo "Building docker image '${fullImageName}'"
+docker build -t ${fullImageName} ${scriptDir}/../../src

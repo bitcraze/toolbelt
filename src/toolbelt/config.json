@@ -1,0 +1,17 @@
+{
+  "environments": {
+    "bitcraze/builder:5": [
+      "python2",
+      "python3",
+      "arm-none-eabi",
+      "sdcc",
+      "docker"
+    ],
+    "bitcraze/web-builder:1": [
+      "docker",
+      "ruby",
+      "php",
+      "jekyll"
+    ]
+  }
+}
