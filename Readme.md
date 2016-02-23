@@ -1,6 +1,9 @@
 # Toolbelt
 
-The toolbelt contains generic tools that are useful in multiple projects, for instance to test and build.
+The toolbelt is a utility to run tools for testing and building of software modules.
+The tools are run in an dockerized environment where toolchains and frameworks 
+are installed, and thus removes the need to install  compilers and so on on your
+local system.
 
 ## Prerequsites
 
