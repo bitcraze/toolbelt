@@ -7,7 +7,7 @@ local system.
 
 ## Prerequsites
 
-The toolbelt requires docker 1.9 or later. 
+The toolbelt requires docker 1.10 or later. 
 
 ## Installation
 
