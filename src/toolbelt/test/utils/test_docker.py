@@ -25,7 +25,7 @@
 import json
 import subprocess
 import unittest
-from unittest.mock import MagicMock, ANY, call
+from unittest.mock import MagicMock, ANY, call, patch
 
 from toolbelt.utils.docker import Docker
 from toolbelt.utils.exception import ToolbeltException
@@ -136,11 +136,28 @@ class DockerTest(unittest.TestCase):
 
         # Assert
         self.sub_proc_mock.check_call.assert_called_once_with(
-                ['docker', 'run', '--rm', '-it', '-v',
-                 '/var/run/docker.sock:/var/run/docker.sock',
+                ['docker', 'run', '--rm', '-v',
+                 '/var/run/docker.sock:/var/run/docker.sock', '-it',
                  '-v', 'v1:v2', '-v', 'v3:v4',
                  '--volumes-from="vf1"', '--volumes-from="vf2"',
                  image_name, 'a1', 'a2'])
+
+    def test_run_in_container_no_tty(self):
+        # Fixture
+        image_name = "anImage"
+        args = []
+
+        with patch('sys.stdout') as mock:
+            mock.isatty.return_value = False
+
+            # Test
+            self.sut.run_in_container(image_name, args)
+
+            # Assert
+            self.sub_proc_mock.check_call.assert_called_once_with(
+                ['docker', 'run', '--rm', '-v',
+                 '/var/run/docker.sock:/var/run/docker.sock',
+                 image_name])
 
     def test_run_script_in_container(self):
         # Fixture
@@ -156,8 +173,8 @@ class DockerTest(unittest.TestCase):
 
         # Assert
         self.sub_proc_mock.check_call.assert_called_once_with(
-                ['docker', 'run', '--rm', '-it', '-v',
-                 '/var/run/docker.sock:/var/run/docker.sock',
+                ['docker', 'run', '--rm', '-v',
+                 '/var/run/docker.sock:/var/run/docker.sock', '-it',
                  '-v', 'v1:v2', '-v', 'v3:v4',
                  '--volumes-from="vf1"', '--volumes-from="vf2"',
                  image_name, script, 'a1', 'a2'])

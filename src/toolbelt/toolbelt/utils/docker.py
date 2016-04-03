@@ -23,7 +23,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import json
-import os
+import sys
 import re
 import subprocess
 
@@ -66,8 +66,12 @@ class Docker:
                                               e.value)
 
     def run_in_container(self, image_name, args, volumes=[], volumes_from=[]):
-        params = ['docker', 'run', '--rm', '-it', '-v',
+        params = ['docker', 'run', '--rm', '-v',
                   '/var/run/docker.sock:/var/run/docker.sock']
+
+        if sys.stdout.isatty():
+            params.append('-it')
+
         for volume in volumes:
             params.append('-v')
             params.append(volume[0] + ':' + volume[1])
