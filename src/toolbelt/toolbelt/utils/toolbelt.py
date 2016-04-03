@@ -76,3 +76,4 @@ class Toolbelt:
             self._main_raises(toolbelt_root)
         except exception.ToolbeltException as e:
             print("\033[91mError: " + e.value + "\033[0m")
+            sys.exit(-1)
