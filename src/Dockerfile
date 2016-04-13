@@ -1,6 +1,6 @@
 FROM debian
 
-RUN apt-get update && apt-get install curl python3 -y
+RUN apt-get update && apt-get install curl python3 git -y
 
 # Install docker (see https://github.com/docker-library/docker)
 ENV DOCKER_BUCKET get.docker.com
