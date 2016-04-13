@@ -7,7 +7,7 @@
       "sdcc",
       "docker"
     ],
-    "bitcraze/web-builder:1": [
+    "bitcraze/web-builder:2": [
       "docker",
       "ruby",
       "php",
