@@ -77,7 +77,7 @@ class Docker:
             params.append(volume[0] + ':' + volume[1])
 
         for volume in volumes_from:
-            params.append('--volumes-from="' + volume + '"')
+            params.append('--volumes-from ' + volume)
 
         params.append(image_name)
 
@@ -116,6 +116,22 @@ class Docker:
     def inspect(self, id):
         result = self._sub_proc.check_output(['docker', 'inspect', id])
         return json.loads(result)
+
+    def list_volumes(self, filter=None):
+        params = ['docker', 'volume', 'ls', '-q']
+        if filter:
+            params.append('-f')
+            params.append(filter)
+        out = self._sub_proc.check_output(params)
+        return out.splitlines()
+
+    def remove_volumes(self, ids):
+        if ids:
+            params = ["docker", "volume", "rm"]
+            for id in ids:
+                params.append(id)
+
+            self._sub_proc.check_call(params)
 
     def _split_image_line(self, line):
         elements = line.split()

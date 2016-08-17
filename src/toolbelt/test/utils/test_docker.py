@@ -139,7 +139,7 @@ class DockerTest(unittest.TestCase):
                 ['docker', 'run', '--rm', '-v',
                  '/var/run/docker.sock:/var/run/docker.sock', '-it',
                  '-v', 'v1:v2', '-v', 'v3:v4',
-                 '--volumes-from="vf1"', '--volumes-from="vf2"',
+                 '--volumes-from vf1', '--volumes-from vf2',
                  image_name, 'a1', 'a2'])
 
     def test_run_in_container_no_tty(self):
@@ -176,7 +176,7 @@ class DockerTest(unittest.TestCase):
                 ['docker', 'run', '--rm', '-v',
                  '/var/run/docker.sock:/var/run/docker.sock', '-it',
                  '-v', 'v1:v2', '-v', 'v3:v4',
-                 '--volumes-from="vf1"', '--volumes-from="vf2"',
+                 '--volumes-from vf1', '--volumes-from vf2',
                  image_name, script, 'a1', 'a2'])
 
     def test_list_images(self):
@@ -248,3 +248,54 @@ class DockerTest(unittest.TestCase):
         self.assertEqual(expected, actual)
         self.sub_proc_mock.check_output.assert_called_once_with(
                 ["docker", "inspect", container])
+
+    def test_list_volumes(self):
+        # Fixture
+        self.sub_proc_mock.check_output.return_value = "123\n456\n789"
+
+        expected = [
+            "123",
+            "456",
+            "789",
+        ]
+
+        # Test
+        actual = self.sut.list_volumes()
+
+        # Assert
+        self.sub_proc_mock.check_output.assert_called_once_with(
+            ['docker', 'volume', 'ls', '-q'])
+        self.assertEqual(expected, actual)
+
+    def test_list_volumes_with_filter(self):
+        # Fixture
+        self.sub_proc_mock.check_output.return_value = "123\n456\n789"
+
+        expected = [
+            "123",
+            "456",
+            "789",
+        ]
+
+        # Test
+        actual = self.sut.list_volumes(filter='a_filter')
+
+        # Assert
+        self.sub_proc_mock.check_output.assert_called_once_with(
+            ['docker', 'volume', 'ls', '-q', '-f', 'a_filter'])
+        self.assertEqual(expected, actual)
+
+    def test_remove_volumes(self):
+        # Fixture
+        ids = [
+            "123",
+            "456",
+            "789",
+        ]
+
+        # Test
+        self.sut.remove_volumes(ids)
+
+        # Assert
+        self.sub_proc_mock.check_call.assert_called_once_with(
+            ['docker', 'volume', 'rm', '123', '456', '789'])
