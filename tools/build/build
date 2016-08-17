@@ -12,4 +12,3 @@ fi
 
 ${scriptDir}/flake8
 ${scriptDir}/test
-${scriptDir}/image $1
