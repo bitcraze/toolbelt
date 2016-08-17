@@ -22,11 +22,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import subprocess
 import unittest
-from unittest.mock import MagicMock, patch, mock_open
-
-import json
+from unittest.mock import MagicMock, patch
 
 from toolbelt.utils.bc_module import BcModule
 from toolbelt.utils.docker import Docker
@@ -36,7 +33,6 @@ from toolbelt.utils.runner import Runner
 
 
 class BcModuleTest(unittest.TestCase):
-
     def setUp(self):
         self.docker_mock = MagicMock(Docker)
         self.runner_mock = MagicMock(Runner)
@@ -58,7 +54,7 @@ class BcModuleTest(unittest.TestCase):
         # Assert
         self.assertEqual("b", actual['a'])
         self.file_wrapper_mock.json_load.assert_called_once_with(
-                path + '/module.json')
+            path + '/module.json')
 
     def test_read_config_reads_raises_exception_on_missing_version(self):
         # Fixture
@@ -66,7 +62,6 @@ class BcModuleTest(unittest.TestCase):
 
         # Assert
         with self.assertRaises(ToolbeltException):
-
             # Test
             self.sut.read_config("/module/root")
 
@@ -87,8 +82,8 @@ class BcModuleTest(unittest.TestCase):
 
         # Assert
         self.runner_mock.run_script_in_env.assert_called_once_with(
-                tb_config, module_config, 'tools/build/' + command,
-                module_root_in_docker_host, arguments)
+            tb_config, module_config, 'tools/build/' + command,
+            module_root_in_docker_host, arguments)
 
     def test_enumerate_tools(self):
         # Fixture
@@ -129,7 +124,6 @@ class BcModuleTest(unittest.TestCase):
 
         # Assert
         with self.assertRaises(ToolbeltException):
-
             # Test
             self.sut.verify_config_version({})
 
@@ -138,6 +132,5 @@ class BcModuleTest(unittest.TestCase):
 
         # Assert
         with self.assertRaises(ToolbeltException):
-
             # Test
             self.sut.verify_config_version({'version': '2.0'})

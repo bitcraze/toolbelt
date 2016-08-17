@@ -22,10 +22,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import json
 import os
 import unittest
-from unittest.mock import patch, mock_open, MagicMock, call
+from unittest.mock import patch, MagicMock, call
 
 from toolbelt.utils.bc_module import BcModule
 from toolbelt.utils.config_reader import ConfigReader

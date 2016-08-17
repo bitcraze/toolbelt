@@ -62,7 +62,7 @@ class SubprocTest(unittest.TestCase):
         subprocess.check_call = MagicMock(return_value=b'Some string')
 
         # Test
-        actual = self.sut.check_call(1, "string", name="value")
+        self.sut.check_call(1, "string", name="value")
 
         # Assert
         subprocess.check_call.assert_called_with(1, "string", name="value")
@@ -83,7 +83,7 @@ class SubprocTest(unittest.TestCase):
         subprocess.check_output = MagicMock(return_value=b'Some string')
 
         # Test
-        actual = self.sut.check_output(1, "string", name="value")
+        self.sut.check_output(1, "string", name="value")
 
         # Assert
         subprocess.check_output.assert_called_with(1, "string", name="value")

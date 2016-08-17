@@ -87,10 +87,10 @@ the tool in that container.
 
 For instance, when calling 
 
-        tb pep8 
+        tb flake8 
         
-on this project, the tools/build/pep8 script is executed in a builder container 
-with python3 (and pep8). 
+on this project, the tools/build/flake8 script is executed in a builder container 
+with python3 (and flake8). 
 
 ## Extending the toolbelt
 

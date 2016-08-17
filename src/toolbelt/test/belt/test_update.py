@@ -23,7 +23,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import unittest
-from unittest.mock import MagicMock, NonCallableMock, call
+from unittest.mock import MagicMock
 
 from toolbelt.belt.update import Update
 from toolbelt.utils.docker import Docker

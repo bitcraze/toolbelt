@@ -10,6 +10,6 @@ if [ -e ${rootDir}/build_info.json ]; then
     cp ${rootDir}/build_info.json ${srcDir}/toolbelt
 fi
 
-${scriptDir}/pep8
+${scriptDir}/flake8
 ${scriptDir}/test
 ${scriptDir}/image $1
