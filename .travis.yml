@@ -1,0 +1,10 @@
+sudo: required
+language: python
+python:
+  - "2.7"
+services:
+  - docker
+before_install:
+  - docker pull bitcraze/builder
+script:
+  - docker run --rm -v ${PWD}:/module bitcraze/builder ./tools/build/build

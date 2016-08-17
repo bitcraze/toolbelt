@@ -131,16 +131,19 @@ class DockerTest(unittest.TestCase):
         volumes = [('v1', 'v2'), ('v3', 'v4')]
         volumes_from = ['vf1', 'vf2']
 
-        # Test
-        self.sut.run_in_container(image_name, args, volumes, volumes_from)
+        with patch('sys.stdout') as mock:
+            mock.isatty.return_value = True
 
-        # Assert
-        self.sub_proc_mock.check_call.assert_called_once_with(
-                ['docker', 'run', '--rm', '-v',
-                 '/var/run/docker.sock:/var/run/docker.sock', '-it',
-                 '-v', 'v1:v2', '-v', 'v3:v4',
-                 '--volumes-from', 'vf1', '--volumes-from', 'vf2',
-                 image_name, 'a1', 'a2'])
+            # Test
+            self.sut.run_in_container(image_name, args, volumes, volumes_from)
+
+            # Assert
+            self.sub_proc_mock.check_call.assert_called_once_with(
+                    ['docker', 'run', '--rm', '-v',
+                     '/var/run/docker.sock:/var/run/docker.sock', '-it',
+                     '-v', 'v1:v2', '-v', 'v3:v4',
+                     '--volumes-from', 'vf1', '--volumes-from', 'vf2',
+                     image_name, 'a1', 'a2'])
 
     def test_run_in_container_no_tty(self):
         # Fixture
@@ -167,17 +170,20 @@ class DockerTest(unittest.TestCase):
         volumes = [('v1', 'v2'), ('v3', 'v4')]
         volumes_from = ['vf1', 'vf2']
 
-        # Test
-        self.sut.run_script_in_container(image_name, script, script_args,
-                                         volumes, volumes_from)
+        with patch('sys.stdout') as mock:
+            mock.isatty.return_value = True
 
-        # Assert
-        self.sub_proc_mock.check_call.assert_called_once_with(
-                ['docker', 'run', '--rm', '-v',
-                 '/var/run/docker.sock:/var/run/docker.sock', '-it',
-                 '-v', 'v1:v2', '-v', 'v3:v4',
-                 '--volumes-from', 'vf1', '--volumes-from', 'vf2',
-                 image_name, script, 'a1', 'a2'])
+            # Test
+            self.sut.run_script_in_container(image_name, script, script_args,
+                                             volumes, volumes_from)
+
+            # Assert
+            self.sub_proc_mock.check_call.assert_called_once_with(
+                    ['docker', 'run', '--rm', '-v',
+                     '/var/run/docker.sock:/var/run/docker.sock', '-it',
+                     '-v', 'v1:v2', '-v', 'v3:v4',
+                     '--volumes-from', 'vf1', '--volumes-from', 'vf2',
+                     image_name, script, 'a1', 'a2'])
 
     def test_list_images(self):
         # Fixture
