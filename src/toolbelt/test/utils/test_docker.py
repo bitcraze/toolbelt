@@ -139,7 +139,7 @@ class DockerTest(unittest.TestCase):
                 ['docker', 'run', '--rm', '-v',
                  '/var/run/docker.sock:/var/run/docker.sock', '-it',
                  '-v', 'v1:v2', '-v', 'v3:v4',
-                 '--volumes-from vf1', '--volumes-from vf2',
+                 '--volumes-from', 'vf1', '--volumes-from', 'vf2',
                  image_name, 'a1', 'a2'])
 
     def test_run_in_container_no_tty(self):
@@ -176,7 +176,7 @@ class DockerTest(unittest.TestCase):
                 ['docker', 'run', '--rm', '-v',
                  '/var/run/docker.sock:/var/run/docker.sock', '-it',
                  '-v', 'v1:v2', '-v', 'v3:v4',
-                 '--volumes-from vf1', '--volumes-from vf2',
+                 '--volumes-from', 'vf1', '--volumes-from', 'vf2',
                  image_name, script, 'a1', 'a2'])
 
     def test_list_images(self):

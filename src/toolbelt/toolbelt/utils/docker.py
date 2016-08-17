@@ -77,7 +77,8 @@ class Docker:
             params.append(volume[0] + ':' + volume[1])
 
         for volume in volumes_from:
-            params.append('--volumes-from ' + volume)
+            params.append('--volumes-from')
+            params.append(volume)
 
         params.append(image_name)
 
