@@ -1,4 +1,4 @@
-# Toolbelt
+# Toolbelt [![Build Status](https://api.travis-ci.org/bitcraze/toolbelt.svg)](https://travis-ci.org/bitcraze/toolbelt)
 
 The toolbelt is a utility to run tools for testing and building of software modules.
 The tools are run in an dockerized environment where toolchains and frameworks 
