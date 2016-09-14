@@ -30,7 +30,7 @@ from toolbelt.utils.docker import Docker
 from toolbelt.utils.exception import ToolbeltException
 
 
-class DcVersion(unittest.TestCase):
+class VersionTest(unittest.TestCase):
 
     def setUp(self):
         self.tb_config = {'container_id': 'my-container', 'host': 'container'}

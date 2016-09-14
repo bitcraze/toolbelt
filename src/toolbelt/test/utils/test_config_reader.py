@@ -93,7 +93,17 @@ class RunnerTest(unittest.TestCase):
         # Assert
         self.assertEqual("info", actual['some'])
 
-    def test_config_set_by_code_in_native_env(self):
+    def test_host_is_set_to_native(self):
+        # Fixture
+
+        # Test
+        actual = self.sut.get_tb_config(self.toolbelt_root,
+                                        self.extensions_mock)
+
+        # Assert
+        self.assertEqual('native', actual['host'])
+
+    def test_paths(self):
         # Fixture
         currentDir = os.getcwd()
 
@@ -102,13 +112,30 @@ class RunnerTest(unittest.TestCase):
                                         self.extensions_mock)
 
         # Assert
-        self.assertEqual('native', actual['host'])
         self.assertEqual(self.toolbelt_root, actual['root'])
         self.assertEqual(self.toolbelt_root + "/tmp", actual['tmpRoot'])
         self.assertEqual(currentDir, actual['module_root'])
         self.assertEqual(currentDir, actual['module_root_in_docker_host'])
+
+    def test_nr_of_module_tools_for_current_directory(self):
+        # Fixture
+
+        # Test
+        actual = self.sut.get_tb_config(self.toolbelt_root,
+                                        self.extensions_mock)
+
+        # Assert
         self.assertEqual([], actual['module_tools'])
-        self.assertEqual(3, len(actual['tools']))
+
+    def test_nr_of_registered_tools(self):
+        # Fixture
+
+        # Test
+        actual = self.sut.get_tb_config(self.toolbelt_root,
+                                        self.extensions_mock)
+
+        # Assert
+        self.assertEqual(4, len(actual['tools']))
 
     def test_config_set_by_code_in_container_env(self):
         # Fixture
