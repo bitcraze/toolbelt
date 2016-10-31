@@ -9,18 +9,35 @@ local system.
 
 The toolbelt requires docker 1.12 or later. See [https://www.docker.com/](https://www.docker.com/) for more information and installation instructions. 
 
+The toolbelt works on linux, OSX and Windows.
+
+### Windows
+
+As the toolbelt uses a bash alias when launched a bash-like environment is required. The
+easiest way to get this on Windows is to use Docker Toolbox (not Docker for Windows).
+
+The toolbelt requires the line endings of the build scripts to be "unix style" (LF only
+as opposed to Windows style CRLF).
+
+* Git on Windows converts line endings for text files to CRLF when cloning a project. 
+To turn it off permanently run ```git config --global core.autocrlf input```
+* You should use an editor that supports unix line endings to avoid that the editor 
+saves files in the Windows style. For instance Notepad++, Atom or IntelliJ can do this.
+
 ## Installation
 
-The toolbelt works on linux and OSX.
 
-The only installation needed is an alias in your .profile or .rc file. For 
+The only installation required is to add an alias to your .profile or .bashrc file. For 
 detailed instructions run 
 
         docker run --rm -it bitcraze/toolbelt        
         
-It is probably possible to use it on Windows as well but it has not been tested. Please share if you do!
+### Windows
 
-        TODO Windows
+If you are using Docker Toolbox you can add this alias to ```/c/Users/MyUser/.bashrc```
+This will be picked up by the Docker Quickstart Terminal when started and the 
+tb alias will be available in the Docker Quickstart Terminal. The toolbelt will 
+not be available in other command windows or terminals.
 
 ## Usage
 
