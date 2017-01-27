@@ -126,6 +126,7 @@ class DockerTest(unittest.TestCase):
 
     def test_run_in_container(self):
         # Fixture
+        uid = '123'
         image_name = "anImage"
         args = ['a1', 'a2']
         volumes = [('v1', 'v2'), ('v3', 'v4')]
@@ -135,11 +136,12 @@ class DockerTest(unittest.TestCase):
             mock.isatty.return_value = True
 
             # Test
-            self.sut.run_in_container(image_name, args, volumes, volumes_from)
+            self.sut.run_in_container(uid, image_name, args, volumes,
+                                      volumes_from)
 
             # Assert
             self.sub_proc_mock.check_call.assert_called_once_with(
-                    ['docker', 'run', '--rm', '-v',
+                    ['docker', 'run', '--rm', '-u', uid, '-v',
                      '/var/run/docker.sock:/var/run/docker.sock', '-it',
                      '-v', 'v1:v2', '-v', 'v3:v4',
                      '--volumes-from', 'vf1', '--volumes-from', 'vf2',
@@ -147,6 +149,7 @@ class DockerTest(unittest.TestCase):
 
     def test_run_in_container_no_tty(self):
         # Fixture
+        uid = '123'
         image_name = "anImage"
         args = []
 
@@ -154,16 +157,17 @@ class DockerTest(unittest.TestCase):
             mock.isatty.return_value = False
 
             # Test
-            self.sut.run_in_container(image_name, args)
+            self.sut.run_in_container(uid, image_name, args)
 
             # Assert
             self.sub_proc_mock.check_call.assert_called_once_with(
-                ['docker', 'run', '--rm', '-v',
+                ['docker', 'run', '--rm', '-u', uid, '-v',
                  '/var/run/docker.sock:/var/run/docker.sock',
                  image_name])
 
     def test_run_script_in_container(self):
         # Fixture
+        uid = '123'
         image_name = "anImage"
         script = 'doit.sh'
         script_args = ['a1', 'a2']
@@ -174,12 +178,13 @@ class DockerTest(unittest.TestCase):
             mock.isatty.return_value = True
 
             # Test
-            self.sut.run_script_in_container(image_name, script, script_args,
-                                             volumes, volumes_from)
+            self.sut.run_script_in_container(uid, image_name, script,
+                                             script_args, volumes,
+                                             volumes_from)
 
             # Assert
             self.sub_proc_mock.check_call.assert_called_once_with(
-                    ['docker', 'run', '--rm', '-v',
+                    ['docker', 'run', '--rm', '-u', uid, '-v',
                      '/var/run/docker.sock:/var/run/docker.sock', '-it',
                      '-v', 'v1:v2', '-v', 'v3:v4',
                      '--volumes-from', 'vf1', '--volumes-from', 'vf2',

@@ -36,10 +36,11 @@ class Runner:
     def run_script_in_env(self, tb_config, module_config, script,
                           module_root_in_docker_host, script_args):
         image_name = self._find_image_for_environment(module_config, tb_config)
-        self._print_info(image_name, script)
+        self._print_info(image_name, script, tb_config)
         self.docker.run_script_in_container(
-                image_name, script, script_args,
-                volumes=[(module_root_in_docker_host, '/module')])
+            tb_config['uid'],
+            image_name, script, script_args,
+            volumes=[(module_root_in_docker_host, '/module')])
 
     def run_build_script_in_env(self, tb_config, module_config,
                                 module_root_in_docker_host, script_args):
@@ -48,16 +49,16 @@ class Runner:
             script = module_config["buildScript"]
 
         image_name = self._find_image_for_environment(module_config, tb_config)
-        self._print_info(image_name, script)
+        self._print_info(image_name, script, tb_config)
 
         if tb_config['host'] == 'native':
             self.docker.run_script_in_container(
-                    image_name, script, script_args,
-                    volumes=[(module_root_in_docker_host, '/module')])
+                tb_config['uid'], image_name, script, script_args,
+                volumes=[(module_root_in_docker_host, '/module')])
         else:
             self.docker.run_script_in_container(
-                    image_name, script, script_args,
-                    volumes_from=[tb_config['container_id']])
+                tb_config['uid'], image_name, script, script_args,
+                volumes_from=[tb_config['container_id']])
 
     def _find_image_for_environment(self, module_config, tb_config):
         environment_requirements = module_config['environmentReq']
@@ -70,6 +71,12 @@ class Runner:
                                 "requirements [" + ", ".join(requirements) +
                                 "]")
 
-    def _print_info(self, image_name, script):
+    def _print_info(self, image_name, script, tb_config):
+        user = "user root"
+        uid = tb_config['uid']
+        if uid != "0":
+            user = "uid " + uid
+
         print("Running build script " + script +
-              " in a container based on the " + image_name + " docker image")
+              " in a container based on the " + image_name +
+              " docker image as " + user)

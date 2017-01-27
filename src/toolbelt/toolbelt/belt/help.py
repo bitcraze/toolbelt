@@ -65,9 +65,11 @@ class Help:
         print('Tools in the current module:')
         for tool in self.bc_module.enumerate_tools("."):
             print("  " + tool)
-        print("")
-        print("Installation on linux and OSX:")
-        print('Add "' + self._alias() + '" to your .profile or .bashrc')
+
+        if not tb_config['config_ok']:
+            print("")
+            print("Installation on linux, OSX and Windows:")
+            print('Add "' + self._alias() + '" to your .profile or .bashrc')
 
     def _command_help(self, tb_config, command):
         for tool in tb_config["tools"]:
@@ -78,7 +80,8 @@ class Help:
 
     def _alias(self):
         return 'alias tb=\'docker run --rm -it -e \"HOST_CW_DIR=${PWD}\" ' \
-               '-e "CALLING_HOST_NAME=$(hostname)" -v ${PWD}:/tb-module ' \
-               '-v ${HOME}/.ssh:/root/.ssh ' \
+               '-e "CALLING_HOST_NAME=$(hostname)" -e "CALLING_UID"=$UID -e ' \
+               '"CALLING_OS"=$(uname) ' \
+               '-v ${PWD}:/tb-module -v ${HOME}/.ssh:/root/.ssh ' \
                '-v /var/run/docker.sock:/var/run/docker.sock ' \
                'bitcraze/toolbelt\''

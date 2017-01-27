@@ -65,8 +65,9 @@ class Docker:
             raise exception.ToolbeltException("Can not contact registry. " +
                                               e.value)
 
-    def run_in_container(self, image_name, args, volumes=[], volumes_from=[]):
-        params = ['docker', 'run', '--rm', '-v',
+    def run_in_container(self, uid, image_name, args, volumes=[],
+                         volumes_from=[]):
+        params = ['docker', 'run', '--rm', '-u', uid, '-v',
                   '/var/run/docker.sock:/var/run/docker.sock']
 
         if sys.stdout.isatty():
@@ -87,14 +88,14 @@ class Docker:
 
         self._sub_proc.check_call(params)
 
-    def run_script_in_container(self, image_name, script, script_args,
+    def run_script_in_container(self, uid, image_name, script, script_args,
                                 volumes=[], volumes_from=[]):
 
         args = [script]
         for script_arg in script_args:
             args.append(script_arg)
 
-        self.run_in_container(image_name, args, volumes, volumes_from)
+        self.run_in_container(uid, image_name, args, volumes, volumes_from)
 
     def list_images(self):
         out = self._sub_proc.check_output(['docker', 'images'])

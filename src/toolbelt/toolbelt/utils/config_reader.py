@@ -45,6 +45,8 @@ class ConfigReader:
     def get_tb_config(self, toolbelt_root, extensions):
         tb_config = self._read_tb_config(toolbelt_root)
 
+        tb_config['config_ok'] = True
+
         # Path to the toolbelt in local file system
         tb_config['root'] = toolbelt_root
 
@@ -69,10 +71,32 @@ class ConfigReader:
             tb_config['host'] = 'container'
             tb_config['container_id'] = os.environ["HOSTNAME"]
 
+        tb_config["os"] = self._read_os(tb_config)
+        tb_config["uid"] = self._read_uid(tb_config)
+
         tb_config['module_tools'] = \
             self.bc_module.enumerate_tools(tb_config['module_root'])
 
         return tb_config
+
+    def _read_os(self, tb_config):
+        return self._read_with_fallback(
+            "CALLING_OS", 'unknown', tb_config).lower()
+
+    def _read_uid(self, tb_config):
+        root_uid = "0"
+        os = tb_config["os"]
+        if os == 'linux':
+            return self._read_with_fallback("CALLING_UID", root_uid, tb_config)
+        return root_uid
+
+    def _read_with_fallback(self, key, default, tb_config):
+        if key in os.environ:
+            value = os.environ[key]
+            if len(value) > 0 and not value.isspace():
+                return value
+        tb_config['config_ok'] = False
+        return default
 
     def _register_tools(self, extensions):
         return [

@@ -48,12 +48,12 @@ class Toolbelt:
         return result
 
     def _main_raises(self, toolbelt_root):
-        tb_config = self.config_reader.get_tb_config(toolbelt_root,
-                                                     self.extensions)
+        tb_config = self.config_reader.get_tb_config(
+            toolbelt_root, self.extensions)
 
-        if tb_config['host'] == 'native':
-            print("Did not detect docker host, the tool belt is running in a "
-                  "native environment")
+        if not tb_config['config_ok']:
+            print("\033[91mWarning: It seems as your alias is not "
+                  "set up correctly. Try to run with help\033[0m")
 
         command = 'help'
         if len(sys.argv) > 1:

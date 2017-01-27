@@ -33,6 +33,11 @@ from toolbelt.utils.file_wrapper import FileWrapper
 
 class RunnerTest(unittest.TestCase):
 
+    ROOT_UID = "0"
+
+    FULL_CONFIG = {'CALLING_UID': "123",
+                   'CALLING_OS': 'Linux'}
+
     def setUp(self):
         self.file_wrapper_mock = MagicMock(FileWrapper)
         self.bc_module_mock = MagicMock(BcModule)
@@ -154,6 +159,67 @@ class RunnerTest(unittest.TestCase):
             self.assertEqual(path, actual['module_root_in_docker_host'])
             self.assertEqual(container_id, actual['container_id'])
 
+    def test_config_set_by_uid(self):
+        # Fixture
+        with patch.dict('os.environ', {'CALLING_UID': "123",
+                                       'CALLING_OS': 'Linux'}):
+
+            # Test
+            actual = self.sut.get_tb_config(self.toolbelt_root,
+                                            self.extensions_mock)
+
+            # Assert
+            self.assertEqual("123", actual['uid'])
+
+    def test_config_root_when_uid_is_missing(self):
+        # Fixture
+        with patch.dict('os.environ'):
+            os.environ['CALLING_OS'] = 'Linux'
+            if 'CALLING_UID' in os.environ:
+                os.environ.pop('CALLING_UID')
+
+            # Test
+            actual = self.sut.get_tb_config(self.toolbelt_root,
+                                            self.extensions_mock)
+
+            # Assert
+            self.assertEqual(self.ROOT_UID, actual['uid'])
+
+    def test_config_root_uid_when_empty(self):
+        # Fixture
+        with patch.dict('os.environ', {'CALLING_UID': "",
+                                       'CALLING_OS': 'Linux'}):
+
+            # Test
+            actual = self.sut.get_tb_config(self.toolbelt_root,
+                                            self.extensions_mock)
+
+            # Assert
+            self.assertEqual(self.ROOT_UID, actual['uid'])
+
+    def test_config_root_uid_when_no_os(self):
+        # Fixture
+        with patch.dict('os.environ', {'CALLING_UID': "123"}):
+
+            # Test
+            actual = self.sut.get_tb_config(self.toolbelt_root,
+                                            self.extensions_mock)
+
+            # Assert
+            self.assertEqual(self.ROOT_UID, actual['uid'])
+
+    def test_config_root_uid_when_not_linux(self):
+        # Fixture
+        with patch.dict('os.environ', {'CALLING_UID': "123",
+                                       'CALLING_OS': 'Darwin'}):
+
+            # Test
+            actual = self.sut.get_tb_config(self.toolbelt_root,
+                                            self.extensions_mock)
+
+            # Assert
+            self.assertEqual(self.ROOT_UID, actual['uid'])
+
     def test_module_tools_added(self):
         # Fixture
         expected = ["nr1", "nr2"]
@@ -165,3 +231,38 @@ class RunnerTest(unittest.TestCase):
 
         # Assert
         self.assertEqual(expected, actual['module_tools'])
+
+    def test_config_ok_flag_is_set(self):
+        # Fixture
+        with patch.dict('os.environ', self.FULL_CONFIG):
+
+            # Test
+            actual = self.sut.get_tb_config(self.toolbelt_root,
+                                            self.extensions_mock)
+
+            # Assert
+            self.assertTrue(actual['config_ok'])
+
+    def test_config_not_ok_without_os(self):
+        # Fixture
+        with patch.dict('os.environ', self.FULL_CONFIG):
+            os.environ.pop('CALLING_OS')
+
+            # Test
+            actual = self.sut.get_tb_config(self.toolbelt_root,
+                                            self.extensions_mock)
+
+            # Assert
+            self.assertFalse(actual['config_ok'])
+
+    def test_config_not_ok_without_uid(self):
+        # Fixture
+        with patch.dict('os.environ', self.FULL_CONFIG):
+            os.environ.pop('CALLING_UID')
+
+            # Test
+            actual = self.sut.get_tb_config(self.toolbelt_root,
+                                            self.extensions_mock)
+
+            # Assert
+            self.assertFalse(actual['config_ok'])

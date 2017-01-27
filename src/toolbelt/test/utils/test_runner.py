@@ -40,7 +40,7 @@ class RunnerTest(unittest.TestCase):
     def test_run_script_in_env(self):
         # Fixture
         module_config = {'environmentReq': ['req']}
-        tb_config = {'environments': {'imageName': ['req']}}
+        tb_config = {'environments': {'imageName': ['req']}, 'uid': '123'}
         module_root_in_docker_host = "path"
         script = "script"
         script_args = ['a', 'b']
@@ -51,7 +51,7 @@ class RunnerTest(unittest.TestCase):
 
         # Assert
         self.docker_mock.run_script_in_container.assert_called_once_with(
-                'imageName', script, script_args,
+                '123', 'imageName', script, script_args,
                 volumes=[(module_root_in_docker_host, '/module')])
 
     def test_run_script_in_env_no_env_found_should_raise(self):
@@ -73,7 +73,8 @@ class RunnerTest(unittest.TestCase):
         # Fixture
         module_config = {'environmentReq': ['req1', 'req2']}
         tb_config = {'environments': {'imageName': ['req1', 'req2'],
-                                      'wrongImage': ['req1']}}
+                                      'wrongImage': ['req1']},
+                     'uid': '123'}
         module_root_in_docker_host = "path"
         script = "script"
         script_args = ['a', 'b']
@@ -84,5 +85,5 @@ class RunnerTest(unittest.TestCase):
 
         # Assert
         self.docker_mock.run_script_in_container.assert_called_once_with(
-                'imageName', script, script_args,
+                '123', 'imageName', script, script_args,
                 volumes=[(module_root_in_docker_host, '/module')])
