@@ -12,6 +12,8 @@ WORKDIR /tb-module
 
 # /module is used for releases when we check out code in the toolbelt container
 # It is passed on to the builder with --volumes-from
+# Make sure it is accessible for all users
+RUN mkdir /module && chmod 777 /module
 VOLUME /module
 
 ENTRYPOINT ["/toolbelt/toolbelt.py"]
