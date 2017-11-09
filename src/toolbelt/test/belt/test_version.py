@@ -59,7 +59,7 @@ class VersionTest(unittest.TestCase):
         self.sut.command(self.tb_config, [])
 
         # Assert
-        self.docker_mock.inspect.assert_calls([
+        self.docker_mock.inspect.assert_has_calls([
             call('my-container'),
             call(image_id)])
 

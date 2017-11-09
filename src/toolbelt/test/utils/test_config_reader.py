@@ -65,7 +65,7 @@ class RunnerTest(unittest.TestCase):
 
         # Assert
         self.assertEqual("data", actual['some'])
-        self.file_wrapper_mock.json_load.assert_calls([
+        self.file_wrapper_mock.json_load.assert_has_calls([
             call(self.toolbelt_root + '/config.json'),
             call(self.toolbelt_root + '/.toolbelt.json')])
 
