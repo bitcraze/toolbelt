@@ -1,6 +1,6 @@
 {
   "environments": {
-    "bitcraze/builder:17": [
+    "bitcraze/builder:18": [
       "python2",
       "python3",
       "arm-none-eabi",
