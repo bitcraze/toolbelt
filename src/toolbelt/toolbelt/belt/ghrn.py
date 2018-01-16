@@ -7,7 +7,7 @@
 #   ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
 #
 # Toolbelt - a utility tu run tools in docker containers
-# Copyright (C) 2016  Bitcraze AB
+# Copyright (C) 2016-2018  Bitcraze AB
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -50,6 +50,8 @@ class Ghrn:
         print("Generate release notes based on a milestone in a github ")
         print("repository. Extracts all issues from the mile stone and ")
         print("lists them.")
+        print("")
+        print("Example: tb ghrn bitcraze/crazyflie-firmware 2017.04")
 
     def _display_release_notes(self, tb_config, repo, milestone):
         all_milestones = self._api_get(
@@ -62,7 +64,18 @@ class Ghrn:
             str(milestone_id) + "&state=all")
 
         issues_list = self._collect_issues(issues)
+
+        contributors = self._api_get(
+            "https://api.github.com/repos/" + repo + "/contributors")
+        contributor_list = self._collect_contributors(contributors)
+
+        print("## Closed issues/pull requests")
+        print('')
         print(issues_list)
+        print('')
+        print('## Contributors')
+        print('')
+        print(contributor_list)
 
     def _api_get(self, url):
         try:
@@ -106,5 +119,15 @@ class Ghrn:
         for issue in sorted_issues:
             result = result + "#{} {}\n".format(issue["number"],
                                                 issue["title"])
+
+        return result
+
+    def _collect_contributors(self, contributors):
+        result = ""
+
+        sorted_contributors = sorted(contributors, key=itemgetter('login'))
+
+        for contributor in sorted_contributors:
+            result = result + "{}\n".format(contributor["login"])
 
         return result
