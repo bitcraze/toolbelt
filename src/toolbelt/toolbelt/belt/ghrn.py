@@ -40,7 +40,7 @@ class Ghrn:
 
     def command(self, tb_config, arguments):
         if len(arguments) != 2:
-            raise ToolbeltException("Not expecting 2 arguments")
+            raise ToolbeltException("Expecting 2 arguments")
         repo = arguments[0]
         milestone = arguments[1]
         self._display_release_notes(tb_config, repo, milestone)
