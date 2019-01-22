@@ -60,7 +60,11 @@ class Docker:
                                         stderr=subprocess.STDOUT)
             return True
         except exception.ToolbeltException as e:
-            if re.search('Error: .* not found', e.value):
+            # TODO This is pretty brittle, improve! We parse the error text
+            #  to determine if the image was not found or if the registry could
+            #  not be contacted. Possible solution would be to use the API
+            #  instead.
+            if re.search(' not found', e.value):
                 return False
             raise exception.ToolbeltException("Can not contact registry. " +
                                               e.value)
