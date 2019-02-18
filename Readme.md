@@ -5,11 +5,11 @@ The tools are run in an dockerized environment where toolchains and frameworks
 are installed, and thus removes the need to install  compilers and so on on your
 local system.
 
-## Prerequsites
+## Prerequisites
 
-The toolbelt requires docker 1.12 or later. See [https://www.docker.com/](https://www.docker.com/) for more information and installation instructions. 
+The toolbelt requires Docker 1.12 or later. See [https://www.docker.com/](https://www.docker.com/) for more information and installation instructions. 
 
-The toolbelt works on linux, OSX and Windows.
+The toolbelt works on Linux, OSX and Windows.
 
 ### Windows
 
@@ -27,7 +27,7 @@ saves files in the Windows style. For instance Notepad++, Atom or IntelliJ can d
 ## Installation
 
 
-The only installation required is to add an alias to your .profile or .bashrc file. For 
+The only installation required is to add an alias to your `.profile` or `.bashrc` file. For 
 detailed instructions run 
 
         docker run --rm -it bitcraze/toolbelt        
@@ -68,16 +68,16 @@ frameworks on the local computer.
 
 It requires virtually no installation, only an alias.
 
-The toolbelt is implemented as a python3 program that is built into a docker 
-image. When the toolbelt is called, a docker container is started (based
+The toolbelt is implemented as a python3 program that is built into a Docker 
+image. When the toolbelt is called, a Docker container is started (based
 on the image) and the appropriate command (tool) is executed. The current 
 directory is passed as a volume to the toolbelt to allow files to be read or 
 modified by tools.
  
 ## Module
  
-A module is a file tree that has a module.json file in the root, normally this 
-corresponds to a project, for instance this repository. The module.json file
+A module is a file tree that has a `module.json` file in the root, normally this 
+corresponds to a project, for instance this repository. The `module.json` file
 describes properties of the module and is read by the toolbelt to understand 
 what to do.
 
@@ -96,10 +96,10 @@ Module tools can be called as any other tool with
 ### Environments
 
 When a module tool is to be executed, the toobelt inspects the "environmentReq" parameter 
-in the module.json file and matches it with the environments available in the 
-config.json file to select an appropriate environment for the module. An environment
-is a docker image with one or more languages, compilers or frameworks installed.
-When the tool is executed, the toolbelt starts a second docker container and runs
+in the `module.json` file and matches it with the environments available in the 
+`config.json` file to select an appropriate environment for the module. An environment
+is a Docker image with one or more languages, compilers or frameworks installed.
+When the tool is executed, the toolbelt starts a second Docker container and runs
 the tool in that container.
 
 For instance, when calling 
@@ -112,6 +112,6 @@ with python3 (and flake8).
 ## Extending the toolbelt
 
 The toolbelt can be extended with your own tools if you like. Create a new 
-docker image based on bitcraze/toolbelt where you copy your tools into the image at 
-toolbelt/belt/ and replace the toolbelt/util/extensions.py with a file where
+Docker image based on bitcraze/toolbelt where you copy your tools into the image at 
+`toolbelt/belt/` and replace the `toolbelt/util/extensions.py` with a file where
 you register your tools.
