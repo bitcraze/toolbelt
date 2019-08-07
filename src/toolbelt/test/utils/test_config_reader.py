@@ -140,7 +140,7 @@ class RunnerTest(unittest.TestCase):
                                         self.extensions_mock)
 
         # Assert
-        self.assertEqual(4, len(actual['tools']))
+        self.assertEqual(5, len(actual['tools']))
 
     def test_config_set_by_code_in_container_env(self):
         # Fixture
