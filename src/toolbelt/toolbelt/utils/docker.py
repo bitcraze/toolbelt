@@ -70,7 +70,7 @@ class Docker:
                                               e.value)
 
     def run_in_container(self, uid, image_name, args, volumes=[],
-                         volumes_from=[]):
+                         volumes_from=[], ports=[]):
         params = ['docker', 'run', '--rm', '-u', uid, '-v',
                   '/var/run/docker.sock:/var/run/docker.sock']
 
@@ -84,6 +84,10 @@ class Docker:
         for volume in volumes_from:
             params.append('--volumes-from')
             params.append(volume)
+
+        for port in ports:
+            params.append('-p')
+            params.append(port[0] + ':' + port[1])
 
         params.append(image_name)
 

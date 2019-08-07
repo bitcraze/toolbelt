@@ -147,6 +147,26 @@ class DockerTest(unittest.TestCase):
                      '--volumes-from', 'vf1', '--volumes-from', 'vf2',
                      image_name, 'a1', 'a2'])
 
+    def test_run_in_container_with_port(self):
+        # Fixture
+        uid = '123'
+        image_name = "anImage"
+        args = ['a1', 'a2']
+        ports = [('80', '8080')]
+
+        with patch('sys.stdout') as mock:
+            mock.isatty.return_value = True
+
+            # Test
+            self.sut.run_in_container(uid, image_name, args, ports=ports)
+
+            # Assert
+            self.sub_proc_mock.check_call.assert_called_once_with(
+                    ['docker', 'run', '--rm', '-u', uid, '-v',
+                     '/var/run/docker.sock:/var/run/docker.sock', '-it',
+                     '-p', '80:8080',
+                     image_name, 'a1', 'a2'])
+
     def test_run_in_container_no_tty(self):
         # Fixture
         uid = '123'

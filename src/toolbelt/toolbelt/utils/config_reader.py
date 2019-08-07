@@ -24,6 +24,7 @@
 
 import os
 
+from toolbelt.belt import docs
 from toolbelt.belt import help
 from toolbelt.belt import update
 from toolbelt.belt import version
@@ -103,7 +104,8 @@ class ConfigReader:
                    help.Help(),
                    update.Update(),
                    version.Version(),
-                   ghrn.Ghrn()
+                   ghrn.Ghrn(),
+                   docs.Docs(),
                ] + extensions.tools()
 
     def _read_tb_config(self, toolbelt_root):
