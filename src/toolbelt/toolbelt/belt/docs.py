@@ -31,6 +31,7 @@ __author__ = 'kristoffer'
 class Docs:
     def __init__(self, docker=Docker()):
         self._docker = docker
+        self._IMAGE = "bitcraze/web-builder"
 
     names = ['docs']
     short_description = "Serve docs locally"
@@ -44,6 +45,7 @@ class Docs:
             if len(arguments) == 1:
                 port = int(arguments[0])
 
+            self._pull_latest_image()
             self._run_jekyll(tb_config, port)
         except ValueError:
             raise ToolbeltException("Port must be integer number")
@@ -51,12 +53,15 @@ class Docs:
     def help(self):
         print("Usage:  tb docs [port]")
         print("Start a local web server and serve the documentation in the"
-              "docs folder. Use when writing documentation to render a basic"
-              "version of the documentation")
+              "docs folder of a repository. Use when writing documentation to "
+              "render a basic version of the documentation")
+
+    def _pull_latest_image(self):
+        self._docker.pull(self._IMAGE)
 
     def _run_jekyll(self, tb_config, port):
         uid = tb_config['uid']
-        image = 'bitcraze/web-builder'
+
         args = ['jekyll', 'serve', '--host', '0.0.0.0', '--incremental',
                 '--config', '/docs-config.yml', '--port', str(port)]
         volumes = [
@@ -65,4 +70,5 @@ class Docs:
         ports = [(str(port), str(port))]
 
         print("Starting jekyll, serving on http://localhost:" + str(port))
-        self._docker.run_in_container(uid, image, args, volumes, ports=ports)
+        self._docker.run_in_container(uid, self._IMAGE, args, volumes,
+                                      ports=ports)
