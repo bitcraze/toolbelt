@@ -12,6 +12,9 @@
       "ruby",
       "php",
       "jekyll"
+    ],
+    "bitcraze/fpga-builder:1": [
+      "ice40"
     ]
   }
 }
