@@ -50,7 +50,7 @@ class BcModule:
 
             self.verify_config_version(module_config)
             return module_config
-        except IOError as e:
+        except IOError:
             raise ToolbeltException("Could not find module configuration. Are "
                                     "you sure you are located in a module?")
 
