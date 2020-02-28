@@ -13,7 +13,7 @@
       "php",
       "jekyll"
     ],
-    "bitcraze/fpga-builder:1": [
+    "bitcraze/fpga-builder:2": [
       "ice40"
     ]
   }
