@@ -7,11 +7,12 @@
       "sdcc",
       "docker"
     ],
-    "bitcraze/web-builder:7": [
+    "bitcraze/web-builder:17": [
       "docker",
       "ruby",
       "php",
-      "jekyll"
+      "jekyll",
+      "wkhtmltopdf"
     ],
     "bitcraze/fpga-builder:2": [
       "ice40"
