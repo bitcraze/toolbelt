@@ -37,6 +37,10 @@ class Runner:
 
         image_name = self._find_image_for_environment(module_config, tb_config)
         self._print_info(image_name, script, tb_config)
+
+        # Try to get the latest builder image
+        self.docker.pull_no_fail(image_name)
+
         self.docker.run_script_in_container(
             tb_config['uid'],
             image_name, script, script_args,

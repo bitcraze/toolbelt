@@ -1,20 +1,20 @@
 {
   "environments": {
-    "bitcraze/builder:23": [
+    "bitcraze/builder": [
       "python2",
       "python3",
       "arm-none-eabi",
       "sdcc",
       "docker"
     ],
-    "bitcraze/web-builder:17": [
+    "bitcraze/web-builder": [
       "docker",
       "ruby",
       "php",
       "jekyll",
       "wkhtmltopdf"
     ],
-    "bitcraze/fpga-builder:2": [
+    "bitcraze/fpga-builder": [
       "ice40"
     ]
   }
