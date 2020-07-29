@@ -22,7 +22,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from toolbelt.utils.docker import Docker
 from toolbelt.utils.exception import ToolbeltException
 
 __author__ = 'kristoffer'
@@ -30,35 +29,18 @@ __author__ = 'kristoffer'
 
 class Runner:
 
-    def __init__(self, docker=Docker()):
+    def __init__(self, docker):
         self.docker = docker
 
     def run_script_in_env(self, tb_config, module_config, script,
                           module_root_in_docker_host, script_args):
+
         image_name = self._find_image_for_environment(module_config, tb_config)
         self._print_info(image_name, script, tb_config)
         self.docker.run_script_in_container(
             tb_config['uid'],
             image_name, script, script_args,
             volumes=[(module_root_in_docker_host, '/module')])
-
-    def run_build_script_in_env(self, tb_config, module_config,
-                                module_root_in_docker_host, script_args):
-        script = "tools/build/build"
-        if "buildScript" in module_config:
-            script = module_config["buildScript"]
-
-        image_name = self._find_image_for_environment(module_config, tb_config)
-        self._print_info(image_name, script, tb_config)
-
-        if tb_config['host'] == 'native':
-            self.docker.run_script_in_container(
-                tb_config['uid'], image_name, script, script_args,
-                volumes=[(module_root_in_docker_host, '/module')])
-        else:
-            self.docker.run_script_in_container(
-                tb_config['uid'], image_name, script, script_args,
-                volumes_from=[tb_config['container_id']])
 
     def _find_image_for_environment(self, module_config, tb_config):
         environment_requirements = module_config['environmentReq']

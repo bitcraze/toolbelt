@@ -24,6 +24,9 @@
 
 
 class Extensions:
+    def __init__(self, di):
+        self.di = di
+
     def tools(self):
         return []
 

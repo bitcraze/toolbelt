@@ -25,9 +25,6 @@
 import os
 
 from toolbelt.utils.exception import ToolbeltException
-from toolbelt.utils.docker import Docker
-from toolbelt.utils.file_wrapper import FileWrapper
-from toolbelt.utils.runner import Runner
 
 __author__ = 'kristoffer'
 
@@ -37,8 +34,7 @@ class BcModule:
     MODULE_CONFIG_FILE = 'module.json'
     MODULE_TOOL_PATH = 'tools/build'
 
-    def __init__(self, docker=Docker(), runner=Runner(),
-                 file_wrapper=FileWrapper()):
+    def __init__(self, docker, runner, file_wrapper):
         self.docker = docker
         self.runner = runner
         self.file_wrapper = file_wrapper

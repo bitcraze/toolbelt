@@ -22,8 +22,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from toolbelt.utils.bc_module import BcModule
-
 __author__ = 'kristoffer'
 
 
@@ -31,7 +29,7 @@ class Help:
     names = ['help', '-h', '--help']
     short_description = "Help"
 
-    def __init__(self, bc_module=BcModule()):
+    def __init__(self, bc_module):
         self.bc_module = bc_module
 
     def command(self, tb_config, arguments):
@@ -48,7 +46,7 @@ class Help:
         print("Get help. Use with a tool to get help for that tool.")
 
     def _general_help(self, tb_config):
-        print("Usage:  tb tool [arguments]")
+        print("Usage:  tb [-d] tool [arguments]")
         print("The toolbelt is used to develop, test and build Bitcraze "
               "modules. When the toolbelt is called, it will "
               "first try to find the tool in the belt, after that it will "
@@ -56,6 +54,8 @@ class Help:
               "root of a module. Module tools are executed in the "
               "context of a docker container based on the module "
               "requirements configured in the module.json config file.")
+        print("")
+        print("-d:  print the docker call that executes the tool")
         print("")
         print('Tools in the belt:')
         for tool in tb_config["tools"]:

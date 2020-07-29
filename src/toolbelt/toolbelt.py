@@ -25,8 +25,12 @@
 
 import os
 
-from toolbelt.utils.toolbelt import Toolbelt
+from toolbelt.utils.toolbelt import DependecyInjector, Toolbelt
+from toolbelt.utils.extensions import Extensions
 
 
 toolbelt_root = os.path.dirname(os.path.realpath(__file__))
-Toolbelt().main(toolbelt_root)
+di = DependecyInjector()
+extensions = Extensions(di)
+toolbelt = Toolbelt(di.bc_module, di.config_reader, di.docker, extensions)
+toolbelt.main(toolbelt_root)

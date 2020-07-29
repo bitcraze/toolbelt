@@ -25,7 +25,6 @@
 import json
 import urllib.request
 from operator import itemgetter
-from toolbelt.utils.docker import Docker
 from toolbelt.utils.exception import ToolbeltException
 
 __author__ = 'kristoffer'
@@ -35,7 +34,7 @@ class Ghrn:
     names = ['ghrn']
     short_description = "Generate release notes from github milestone"
 
-    def __init__(self, docker=Docker()):
+    def __init__(self, docker):
         self._docker = docker
 
     def command(self, tb_config, arguments):

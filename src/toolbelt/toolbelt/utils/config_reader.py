@@ -24,14 +24,6 @@
 
 import os
 
-from toolbelt.belt import docs
-from toolbelt.belt import help
-from toolbelt.belt import update
-from toolbelt.belt import version
-from toolbelt.belt import ghrn
-from toolbelt.utils.bc_module import BcModule
-from toolbelt.utils.file_wrapper import FileWrapper
-
 __author__ = 'kristoffer'
 
 
@@ -39,9 +31,10 @@ class ConfigReader:
     CONFIG_FILE = 'config.json'
     PRIVATE_CONFIG_FILE = '.toolbelt.json'
 
-    def __init__(self, file_wrapper=FileWrapper(), bc_module=BcModule()):
+    def __init__(self, file_wrapper, bc_module, tools):
         self.file_wrapper = file_wrapper
         self.bc_module = bc_module
+        self.tools = tools
 
     def get_tb_config(self, toolbelt_root, extensions):
         tb_config = self._read_tb_config(toolbelt_root)
@@ -100,13 +93,7 @@ class ConfigReader:
         return default
 
     def _register_tools(self, extensions):
-        return [
-                   help.Help(),
-                   update.Update(),
-                   version.Version(),
-                   ghrn.Ghrn(),
-                   docs.Docs(),
-               ] + extensions.tools()
+        return self.tools + extensions.tools()
 
     def _read_tb_config(self, toolbelt_root):
         tb_config = self.file_wrapper.json_load(

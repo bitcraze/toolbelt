@@ -27,14 +27,44 @@ import sys
 from toolbelt.utils import exception
 from toolbelt.utils.bc_module import BcModule
 from toolbelt.utils.config_reader import ConfigReader
-from toolbelt.utils.extensions import Extensions
+from toolbelt.utils.docker import Docker
+from toolbelt.utils.file_wrapper import FileWrapper
+from toolbelt.utils.runner import Runner
+from toolbelt.utils.subproc import SubProc
+from toolbelt.belt import docs
+from toolbelt.belt import help
+from toolbelt.belt import update
+from toolbelt.belt import version
+from toolbelt.belt import ghrn
+
+
+# Ultra Crude DI
+class DependecyInjector:
+    def __init__(self):
+        self.sub_proc = SubProc()
+        self.docker = Docker(self.sub_proc)
+        self.runner = Runner(self.docker)
+        self.file_wrapper = FileWrapper()
+        self.bc_module = BcModule(self.docker, self.runner, self.file_wrapper)
+
+        self.tools = [
+            help.Help(self.bc_module),
+            update.Update(self.docker),
+            version.Version(self.docker),
+            ghrn.Ghrn(self.docker),
+            docs.Docs(self.docker),
+        ]
+
+        self.config_reader = ConfigReader(self.file_wrapper,
+                                          self.bc_module,
+                                          self.tools)
 
 
 class Toolbelt:
-    def __init__(self, bc_module=BcModule(), config_reader=ConfigReader(),
-                 extensions=Extensions()):
+    def __init__(self, bc_module, config_reader, docker, extensions):
         self.bc_module = bc_module
         self.config_reader = config_reader
+        self.docker = docker
         self.extensions = extensions
 
     def _find_tool(self, tools, name):
@@ -55,11 +85,23 @@ class Toolbelt:
             print("\033[91mWarning: It seems as your alias is not "
                   "set up correctly. Try to run with help\033[0m")
 
+        verbose = False
         command = 'help'
-        if len(sys.argv) > 1:
-            command = sys.argv[1]
-        arguments = sys.argv[2:]
+        pos = 1
 
+        if len(sys.argv) > pos:
+            arg = sys.argv[pos]
+            if arg == '-d':
+                verbose = True
+                pos += 1
+
+        if len(sys.argv) > pos:
+            command = sys.argv[pos]
+            pos += 1
+
+        arguments = sys.argv[pos:]
+
+        self.docker.verbose = verbose
         self.extensions.pre_tool_execution(tb_config, command, arguments)
 
         tool = self._find_tool(tb_config['tools'], command)

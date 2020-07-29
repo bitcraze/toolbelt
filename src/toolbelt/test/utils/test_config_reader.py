@@ -53,8 +53,11 @@ class RunnerTest(unittest.TestCase):
 
         self.toolbelt_root = 'path'
 
+        self.mock_tools = ['dummy1', 'dummy2']
+
         self.sut = ConfigReader(file_wrapper=self.file_wrapper_mock,
-                                bc_module=self.bc_module_mock)
+                                bc_module=self.bc_module_mock,
+                                tools=self.mock_tools)
 
     def test_read_tb_config(self):
         # Fixture
@@ -140,7 +143,7 @@ class RunnerTest(unittest.TestCase):
                                         self.extensions_mock)
 
         # Assert
-        self.assertEqual(5, len(actual['tools']))
+        self.assertEqual(len(self.mock_tools), len(actual['tools']))
 
     def test_config_set_by_code_in_container_env(self):
         # Fixture

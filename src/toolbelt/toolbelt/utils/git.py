@@ -22,13 +22,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from toolbelt.utils.subproc import SubProc
-
 __author__ = 'kristoffer'
 
 
 class Git:
-    def __init__(self, subproc=SubProc()):
+    def __init__(self, subproc):
         self.subproc = subproc
 
     def clone(self, repo, destination, tag=None, depth=None):

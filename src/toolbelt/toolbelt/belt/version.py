@@ -22,7 +22,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from toolbelt.utils.docker import Docker
 from toolbelt.utils.exception import ToolbeltException
 
 __author__ = 'kristoffer'
@@ -32,7 +31,7 @@ class Version:
     names = ['version', '-V', '--version']
     short_description = "Display version of the tool belt"
 
-    def __init__(self, docker=Docker()):
+    def __init__(self, docker):
         self._docker = docker
 
     def command(self, tb_config, arguments):

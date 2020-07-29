@@ -27,16 +27,16 @@ import sys
 import re
 import subprocess
 
-from toolbelt.utils.subproc import SubProc
 from toolbelt.utils import exception
 
 __author__ = 'kristoffer'
 
 
 class Docker:
-    def __init__(self, sub_proc=SubProc()):
+    def __init__(self, sub_proc):
         self._sub_proc = sub_proc
         self.db_restart_wait_time = 1
+        self.verbose = False
 
     def container_exist(self, container_name):
         result = self._sub_proc.call(
@@ -94,6 +94,9 @@ class Docker:
         for arg in args:
             params.append(arg)
 
+        if self.verbose:
+            print('Running: ' + ' '.join(params))
+
         self._sub_proc.check_call(params)
 
     def run_script_in_container(self, uid, image_name, script, script_args,
@@ -122,6 +125,9 @@ class Docker:
 
     def pull(self, image):
         self._sub_proc.check_call(['docker', 'pull', image])
+
+    def pull_no_fail(self, image):
+        self._sub_proc.call(['docker', 'pull', image])
 
     def inspect(self, id):
         result = self._sub_proc.check_output(['docker', 'inspect', id])
