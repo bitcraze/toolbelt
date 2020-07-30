@@ -31,6 +31,8 @@ from toolbelt.utils.docker import Docker
 from toolbelt.utils.file_wrapper import FileWrapper
 from toolbelt.utils.runner import Runner
 from toolbelt.utils.subproc import SubProc
+from toolbelt.utils.git import Git
+from toolbelt.utils.ui import Ui
 from toolbelt.belt import docs
 from toolbelt.belt import help
 from toolbelt.belt import update
@@ -46,6 +48,8 @@ class DependecyInjector:
         self.runner = Runner(self.docker)
         self.file_wrapper = FileWrapper()
         self.bc_module = BcModule(self.docker, self.runner, self.file_wrapper)
+        self.git = Git(self.sub_proc)
+        self.ui = Ui()
 
         self.tools = [
             help.Help(self.bc_module),
