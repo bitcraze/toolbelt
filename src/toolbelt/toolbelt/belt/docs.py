@@ -56,7 +56,7 @@ class Docs:
               "render a basic version of the documentation")
 
     def _pull_latest_image(self):
-        self._docker.pull(self._IMAGE)
+        self._docker.pull_no_fail(self._IMAGE)
 
     def _run_jekyll(self, tb_config, port):
         uid = tb_config['uid']
@@ -64,10 +64,12 @@ class Docs:
         args = ['jekyll', 'serve', '--host', '0.0.0.0', '--incremental',
                 '--config', '/docs-config.yml', '--port', str(port)]
         volumes = [
-            (tb_config['module_root_in_docker_host'] + '/docs', '/module')
+            (tb_config['module_root_in_docker_host'] + '/docs', '/module/docs')
         ]
         ports = [(str(port), str(port))]
 
-        print("Starting jekyll, serving on http://localhost:" + str(port))
+        print()
+        print("Starting jekyll, serving on http://localhost:" + str(port) + "/docs")
+        print()
         self._docker.run_in_container(uid, self._IMAGE, args, volumes,
                                       ports=ports)
