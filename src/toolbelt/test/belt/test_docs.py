@@ -42,7 +42,7 @@ class DocsTest(unittest.TestCase):
                              '--incremental', '--config',
                              '/docs-config.yml']
         self.default_args_jekyll_port = ['--port', '80']
-        self.volumes = [('/some/path/docs', '/module')]
+        self.expected_volumes = [('/some/path/docs', '/module/docs')]
 
         self.sut = Docs(docker=self.docker_mock)
 
@@ -75,7 +75,7 @@ class DocsTest(unittest.TestCase):
             'a-uid',
             'bitcraze/web-builder',
             self.default_args + self.default_args_jekyll_port,
-            self.volumes, ports=[('80', '80')])
+            self.expected_volumes, ports=[('80', '80')])
 
     def test_docs_with_port(self):
         # Fixture
@@ -88,4 +88,4 @@ class DocsTest(unittest.TestCase):
             'a-uid',
             'bitcraze/web-builder',
             self.default_args + ['--port', '8080'],
-            self.volumes, ports=[('8080', '8080')])
+            self.expected_volumes, ports=[('8080', '8080')])
