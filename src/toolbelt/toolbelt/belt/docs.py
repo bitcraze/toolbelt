@@ -69,7 +69,8 @@ class Docs:
         ports = [(str(port), str(port))]
 
         print()
-        print("Starting jekyll, serving on http://localhost:" + str(port) + "/docs")
+        print("Starting jekyll, serving on http://localhost:{}/docs".
+              format(str(port)))
         print()
         self._docker.run_in_container(uid, self._IMAGE, args, volumes,
                                       ports=ports)
