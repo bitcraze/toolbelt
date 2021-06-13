@@ -1,6 +1,9 @@
-FROM python:3.7-buster
+FROM python:3.9-alpine
 
 ENV PYTHONIOENCODING UTF-8
+
+# RUN apt-get update && apt-get install -y curl
+RUN apk add --no-cache curl
 
 # Install docker
 ENV DOCKER_VERSION 19.03.1
