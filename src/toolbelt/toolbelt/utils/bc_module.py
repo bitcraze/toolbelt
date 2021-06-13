@@ -32,7 +32,7 @@ __author__ = 'kristoffer'
 class BcModule:
 
     MODULE_CONFIG_FILE = 'module.json'
-    MODULE_TOOL_PATH = 'tools/build'
+    MODULE_TOOL_PATH = 'tools'
 
     def __init__(self, docker, runner, file_wrapper):
         self.docker = docker
@@ -44,30 +44,46 @@ class BcModule:
             module_config = self.file_wrapper.json_load(
                     module_root + "/" + self.MODULE_CONFIG_FILE)
 
-            self.verify_config_version(module_config)
+            version = self.verify_config_version(module_config)
+            self.convert_old_config(version, module_config)
             return module_config
         except IOError:
             raise ToolbeltException("Could not find module configuration. Are "
                                     "you sure you are located in a module?")
 
     def execute_tool(self, tb_config, command, arguments):
-        module_config = self.read_config(tb_config['module_root'])
-        script = self.MODULE_TOOL_PATH + "/" + command
-        self.runner.run_script_in_env(tb_config, module_config, script,
+        dir = tb_config['module_tools'][command]
+        script = self.MODULE_TOOL_PATH + "/" + dir + '/' + command
+        self.runner.run_script_in_env(tb_config, script,
                                       tb_config['module_root_in_docker_host'],
                                       arguments)
 
-    def enumerate_tools(self, module_root):
-        try:
-            return os.listdir(module_root + "/" + self.MODULE_TOOL_PATH)
-        except OSError:
-            return []
+    def enumerate_tools(self, module_root, module_config):
+        dirs = module_config["environmentReqs"].keys()
+        result = {}
+        for dir in dirs:
+            try:
+                tools_in_dir = os.listdir(module_root + "/" + self.MODULE_TOOL_PATH + "/" + dir)
+                for tool in tools_in_dir:
+                    if tool in result:
+                        raise ToolbeltException("Tool '" + tool + "' exists in multiple directories, aborting.")
+                    result[tool] = dir
+            except OSError:
+                pass
+        return result
+
+    def convert_old_config(self, version, config):
+        if version == '1.0':
+            config['environmentReqs'] = {"build": config["environmentReq"]}
+            config.pop("environmentReq", None)
 
     def verify_config_version(self, config):
         config_version = "NA"
         if 'version' in config:
             config_version = config['version']
 
-        if config_version != "1.0":
+        if config_version != "1.0" and config_version != "2.0":
             raise ToolbeltException("module config version " + config_version +
                                     " not supported")
+
+        return config_version

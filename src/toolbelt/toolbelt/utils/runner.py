@@ -32,10 +32,11 @@ class Runner:
     def __init__(self, docker):
         self.docker = docker
 
-    def run_script_in_env(self, tb_config, module_config, script,
-                          module_root_in_docker_host, script_args):
+    def run_script_in_env(self, tb_config, script, module_root_in_docker_host, script_args):
 
-        image_name = self._find_image_for_environment(module_config, tb_config)
+        module_config = tb_config['module_config']
+        dir = self._find_dir_for_script(module_config, script)
+        image_name = self._find_image_for_environment(module_config, dir, tb_config)
         self._print_info(image_name, script, tb_config)
 
         # Try to get the latest builder image
@@ -46,29 +47,15 @@ class Runner:
             image_name, script, script_args,
             volumes=[(module_root_in_docker_host, '/module')])
 
-    def run_build_script_in_env(self, tb_config, module_config,
-                                module_root_in_docker_host, script_args):
-        script = "tools/build/build"
-        if "buildScript" in module_config:
-            script = module_config["buildScript"]
+    def _find_dir_for_script(self, module_config, script):
+        # Expect script to be something like "tools/build/the-tool"
+        parts = script.split('/')
+        if len(parts) != 3:
+            raise ToolbeltException('Invalid script path: ' + script)
+        return parts[1]
 
-        image_name = self._find_image_for_environment(module_config, tb_config)
-        self._print_info(image_name, script, tb_config)
-
-        # Try to get the latest builder image
-        self.docker.pull_no_fail(image_name)
-
-        if tb_config['host'] == 'native':
-            self.docker.run_script_in_container(
-                tb_config['uid'], image_name, script, script_args,
-                volumes=[(module_root_in_docker_host, '/module')])
-        else:
-            self.docker.run_script_in_container(
-                tb_config['uid'], image_name, script, script_args,
-                volumes_from=[tb_config['container_id']])
-
-    def _find_image_for_environment(self, module_config, tb_config):
-        environment_requirements = module_config['environmentReq']
+    def _find_image_for_environment(self, module_config, dir, tb_config):
+        environment_requirements = module_config['environmentReqs'][dir]
         environments = tb_config['environments']
         requirements = set(environment_requirements)
         for image_name, properties in environments.items():
@@ -84,6 +71,6 @@ class Runner:
         if uid != "0":
             user = "uid " + uid
 
-        print("Running build script " + script +
+        print("Running script " + script +
               " in a container based on the " + image_name +
               " docker image as " + user)

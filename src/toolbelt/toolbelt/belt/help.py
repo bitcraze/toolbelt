@@ -29,8 +29,8 @@ class Help:
     names = ['help', '-h', '--help']
     short_description = "Help"
 
-    def __init__(self, bc_module):
-        self.bc_module = bc_module
+    def __init__(self):
+        pass
 
     def command(self, tb_config, arguments):
         if len(arguments) == 0:
@@ -63,7 +63,7 @@ class Help:
                   tool.short_description)
         print("")
         print('Tools in the current module:')
-        for tool in self.bc_module.enumerate_tools("."):
+        for tool in tb_config['module_tools'].keys():
             print("  " + tool)
 
         if not tb_config['config_ok']:

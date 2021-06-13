@@ -39,14 +39,14 @@ class RunnerTest(unittest.TestCase):
 
     def test_run_script_in_env(self):
         # Fixture
-        module_config = {'environmentReq': ['req']}
-        tb_config = {'environments': {'imageName': ['req']}, 'uid': '123'}
+        module_config = {'environmentReqs': {'build': ['theReq']}}
+        tb_config = {'environments': {'imageName': ['theReq']}, 'uid': '123', 'module_config': module_config}
         module_root_in_docker_host = "path"
-        script = "script"
+        script = "tools/build/script"
         script_args = ['a', 'b']
 
         # Test
-        self.sut.run_script_in_env(tb_config, module_config, script,
+        self.sut.run_script_in_env(tb_config, script,
                                    module_root_in_docker_host, script_args)
 
         # Assert
@@ -56,31 +56,32 @@ class RunnerTest(unittest.TestCase):
 
     def test_run_script_in_env_no_env_found_should_raise(self):
         # Fixture
-        module_config = {'environmentReq': ['unmatched_req']}
-        tb_config = {'environments': {'imageName': ['req']}}
+        module_config = {'environmentReqs': {'build': ['unmatched_req']}}
+        tb_config = {'environments': {'imageName': ['theReq']}, 'module_config': module_config}
         module_root_in_docker_host = "path"
-        script = "script"
+        script = "tools/build/script"
         script_args = []
 
         # Assert
         with self.assertRaises(ToolbeltException):
 
             # Test
-            self.sut.run_script_in_env(tb_config, module_config, script,
+            self.sut.run_script_in_env(tb_config, script,
                                        module_root_in_docker_host, script_args)
 
     def test_use_matching_env(self):
         # Fixture
-        module_config = {'environmentReq': ['req1', 'req2']}
+        module_config = {'environmentReqs': {'build': ['req1', 'req2']}}
         tb_config = {'environments': {'imageName': ['req1', 'req2'],
                                       'wrongImage': ['req1']},
-                     'uid': '123'}
+                     'uid': '123',
+                     'module_config': module_config}
         module_root_in_docker_host = "path"
-        script = "script"
+        script = "tools/build/script"
         script_args = ['a', 'b']
 
         # Test
-        self.sut.run_script_in_env(tb_config, module_config, script,
+        self.sut.run_script_in_env(tb_config, script,
                                    module_root_in_docker_host, script_args)
 
         # Assert

@@ -1,6 +1,4 @@
 {
-  "version": "1.0",
-  "environmentReq": [
-    "python3"
-  ]
+  "version": "2.0",
+  "environmentReqs": {"build":["python3"]}
 }

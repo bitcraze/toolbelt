@@ -56,20 +56,15 @@ class ConfigReader:
         # Path to module root in docker host file system
         tb_config['module_root_in_docker_host'] = tb_config['module_root']
 
-        # Is the toolbelt is running in native environment or a docker
-        # container
-        tb_config['host'] = 'native'
-
         if "HOST_CW_DIR" in os.environ:
             tb_config['module_root_in_docker_host'] = os.environ["HOST_CW_DIR"]
-            tb_config['host'] = 'container'
             tb_config['container_id'] = os.environ["HOSTNAME"]
 
         tb_config["os"] = self._read_os(tb_config)
         tb_config["uid"] = self._read_uid(tb_config)
 
-        tb_config['module_tools'] = \
-            self.bc_module.enumerate_tools(tb_config['module_root'])
+        tb_config['module_config'] = self.bc_module.read_config(tb_config['module_root'])
+        tb_config['module_tools'] = self.bc_module.enumerate_tools(tb_config['module_root'], tb_config['module_config'])
 
         return tb_config
 

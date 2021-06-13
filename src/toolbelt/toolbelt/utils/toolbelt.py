@@ -52,7 +52,7 @@ class DependecyInjector:
         self.ui = Ui()
 
         self.tools = [
-            help.Help(self.bc_module),
+            help.Help(),
             update.Update(self.docker),
             version.Version(self.docker),
             ghrn.Ghrn(self.docker),
@@ -114,8 +114,7 @@ class Toolbelt:
         elif command in tb_config['module_tools']:
             self.bc_module.execute_tool(tb_config, command, arguments)
         else:
-            raise exception.ToolbeltException(
-                    "Don't know how to execute " + command)
+            raise exception.ToolbeltException("Don't know how to execute " + command)
 
     def main(self, toolbelt_root):
         try:

@@ -101,16 +101,6 @@ class RunnerTest(unittest.TestCase):
         # Assert
         self.assertEqual("info", actual['some'])
 
-    def test_host_is_set_to_native(self):
-        # Fixture
-
-        # Test
-        actual = self.sut.get_tb_config(self.toolbelt_root,
-                                        self.extensions_mock)
-
-        # Assert
-        self.assertEqual('native', actual['host'])
-
     def test_paths(self):
         # Fixture
         currentDir = os.getcwd()
@@ -158,7 +148,6 @@ class RunnerTest(unittest.TestCase):
                                             self.extensions_mock)
 
             # Assert
-            self.assertEqual('container', actual['host'])
             self.assertEqual(path, actual['module_root_in_docker_host'])
             self.assertEqual(container_id, actual['container_id'])
 
@@ -225,7 +214,7 @@ class RunnerTest(unittest.TestCase):
 
     def test_module_tools_added(self):
         # Fixture
-        expected = ["nr1", "nr2"]
+        expected = {"build": ["nr1", "nr2"], "build-docs": ["nr3"]}
         self.bc_module_mock.enumerate_tools.return_value = expected
 
         # Test
@@ -234,6 +223,18 @@ class RunnerTest(unittest.TestCase):
 
         # Assert
         self.assertEqual(expected, actual['module_tools'])
+
+    def test_module_config_added(self):
+        # Fixture
+        expected = {"some": "config"}
+        self.bc_module_mock.read_config.return_value = expected
+
+        # Test
+        actual = self.sut.get_tb_config(self.toolbelt_root,
+                                        self.extensions_mock)
+
+        # Assert
+        self.assertEqual(expected, actual['module_config'])
 
     def test_config_ok_flag_is_set(self):
         # Fixture

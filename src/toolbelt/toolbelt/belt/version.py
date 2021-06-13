@@ -46,13 +46,10 @@ class Version:
         print("docker image that the current container is based on")
 
     def _display_version(self, tb_config):
-        if (tb_config['host'] == 'native'):
-            print("Version not available")
-        else:
-            container = tb_config['container_id']
-            container_data = self._docker.inspect(container)
-            image_id = container_data[0]['Image']
-            image_name = container_data[0]['Config']['Image']
+        container = tb_config['container_id']
+        container_data = self._docker.inspect(container)
+        image_id = container_data[0]['Image']
+        image_name = container_data[0]['Config']['Image']
 
-            created = self._docker.inspect(image_id)[0]['Created']
-            print(image_name + ' - ' + created)
+        created = self._docker.inspect(image_id)[0]['Created']
+        print(image_name + ' - ' + created)

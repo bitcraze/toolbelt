@@ -38,7 +38,7 @@ class BcModuleTest(unittest.TestCase):
         self.runner_mock = MagicMock(Runner)
         self.file_wrapper_mock = MagicMock(FileWrapper)
 
-        self.config = {"version": "1.0", "a": "b"}
+        self.config = {"version": "2.0", "environmentReqs": ["b"]}
         self.file_wrapper_mock.json_load.return_value = self.config
 
         self.sut = BcModule(self.docker_mock, self.runner_mock,
@@ -52,9 +52,35 @@ class BcModuleTest(unittest.TestCase):
         actual = self.sut.read_config(path)
 
         # Assert
-        self.assertEqual("b", actual['a'])
+        self.assertEqual(["b"], actual['environmentReqs'])
         self.file_wrapper_mock.json_load.assert_called_once_with(
             path + '/module.json')
+
+    def test_read_config_reads_v1_config_and_converts(self):
+        # Fixture
+        module_config = {"version": "1.0", "environmentReq": ["arm-none-eabi"]}
+        self.file_wrapper_mock.json_load.return_value = module_config
+        path = "/module/root"
+
+        # Test
+        actual = self.sut.read_config(path)
+
+        # Assert
+        expected = {"build": ["arm-none-eabi"]}
+        self.assertEqual(expected, actual['environmentReqs'])
+
+    def test_read_config_reads_v2(self):
+        # Fixture
+        expected = {"build": ["arm-none-eabi"], "build-dox": ["doxygen"]}
+        module_config = {"version": "2.0", "environmentReqs": expected}
+        self.file_wrapper_mock.json_load.return_value = module_config
+        path = "/module/root"
+
+        # Test
+        actual = self.sut.read_config(path)
+
+        # Assert
+        self.assertEqual(expected, actual['environmentReqs'])
 
     def test_read_config_reads_raises_exception_on_missing_version(self):
         # Fixture
@@ -67,55 +93,111 @@ class BcModuleTest(unittest.TestCase):
 
     def test_execute_tool(self):
         # Fixture
+        command = 'cmd'
+        dir = 'build'
         path_to_root = 'pathToRoot'
         module_root_in_docker_host = "moduleRootInDockerHost"
-        module_config = {"version": "1.0", "a": "b"}
         tb_config = {'module_root': path_to_root,
-                     'module_root_in_docker_host': module_root_in_docker_host}
-        command = 'cmd'
+                     'module_root_in_docker_host': module_root_in_docker_host,
+                     'module_tools': {command: dir}}
         arguments = ['a1']
-
-        self.file_wrapper_mock.json_load.return_value = module_config
 
         # Test
         self.sut.execute_tool(tb_config, command, arguments)
 
         # Assert
         self.runner_mock.run_script_in_env.assert_called_once_with(
-            tb_config, module_config, 'tools/build/' + command,
+            tb_config, 'tools/' + dir + '/' + command,
             module_root_in_docker_host, arguments)
 
     def test_enumerate_tools(self):
         # Fixture
+        dir1 = "build"
+        dir2 = "build-docs"
+        tool1 = "tool1"
+        tool2 = "tool2"
+        tool3 = "tool3"
+
+        def side_effect(*args, **kwargs):
+            if args[0] == module_root + "/tools/" + dir1:
+                return [tool1, tool2]
+            if args[0] == module_root + "/tools/" + dir2:
+                return [tool3]
+            raise "Should not get here"
+
         with patch('os.listdir') as mock:
             module_root = "moduleRoot"
-            expected = ['result']
-            mock.return_value = expected
+            mock.side_effect = side_effect
+            module_config = {"environmentReqs": {dir1: ["bla"], dir2: ["ha"]}}
+            expected = {tool1: dir1, tool2: dir1, tool3: dir2}
 
             # Test
-            actual = self.sut.enumerate_tools(module_root)
+            actual = self.sut.enumerate_tools(module_root, module_config)
 
             # Assert
             self.assertEqual(expected, actual)
-            mock.assert_called_once_with(module_root + "/tools/build")
 
     def test_enumerate_tools_nothing_found(self):
         # Fixture
+        dir1 = "build"
+        dir2 = "build-docs"
+        tool3 = "tool3"
+
+        def side_effect(*args, **kwargs):
+            if args[0] == module_root + "/tools/" + dir1:
+                raise OSError()
+            if args[0] == module_root + "/tools/" + dir2:
+                return [tool3]
+            raise "Should not get here"
+
         with patch('os.listdir') as mock:
             module_root = "moduleRoot"
-            mock.side_effect = OSError()
+            mock.side_effect = side_effect
+            module_config = {"environmentReqs": {dir1: ["bla"], dir2: ["ha"]}}
+            expected = {tool3: dir2}
 
             # Test
-            actual = self.sut.enumerate_tools(module_root)
+            actual = self.sut.enumerate_tools(module_root, module_config)
 
             # Assert
-            self.assertEqual([], actual)
+            self.assertEqual(expected, actual)
 
-    def test_verify_config_version_returns_on_OK_version(self):
+    def test_that_duplication_of_tool_name_raises_exception(self):
+        # Fixture
+        dir1 = "build"
+        dir2 = "build-docs"
+        tool = "same-name"
+
+        def side_effect(*args, **kwargs):
+            if args[0] == module_root + "/tools/" + dir1:
+                return [tool]
+            if args[0] == module_root + "/tools/" + dir2:
+                return [tool]
+            raise "Should not get here"
+
+        with patch('os.listdir') as mock:
+            module_root = "moduleRoot"
+            mock.side_effect = side_effect
+            module_config = {"environmentReqs": {dir1: ["bla"], dir2: ["ha"]}}
+
+            # Assert
+            with self.assertRaises(ToolbeltException):
+                # Test
+                self.sut.enumerate_tools(module_root, module_config)
+
+    def test_verify_config_version_returns_on_version_1(self):
         # Fixture
 
         # Test
         self.sut.verify_config_version({'version': '1.0'})
+
+        # Assert
+
+    def test_verify_config_version_returns_on_version_2(self):
+        # Fixture
+
+        # Test
+        self.sut.verify_config_version({'version': '2.0'})
 
         # Assert
 
@@ -133,4 +215,4 @@ class BcModuleTest(unittest.TestCase):
         # Assert
         with self.assertRaises(ToolbeltException):
             # Test
-            self.sut.verify_config_version({'version': '2.0'})
+            self.sut.verify_config_version({'version': '3.0'})

@@ -23,7 +23,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import unittest
-from unittest.mock import MagicMock, NonCallableMock, call
+from unittest.mock import MagicMock, call
 
 from toolbelt.belt.version import Version
 from toolbelt.utils.docker import Docker
@@ -62,13 +62,3 @@ class VersionTest(unittest.TestCase):
         self.docker_mock.inspect.assert_has_calls([
             call('my-container'),
             call(image_id)])
-
-    def test_no_call_to_docker_in_native_env(self):
-        # Fixture
-        self.tb_config['host'] = 'native'
-        self.docker_mock.image_of_container = NonCallableMock()
-
-        # Test
-        self.sut.command(self.tb_config, [])
-
-        # Assert
