@@ -12,7 +12,8 @@
       "ruby",
       "php",
       "jekyll",
-      "wkhtmltopdf"
+      "wkhtmltopdf",
+      "doxygen"
     ],
     "bitcraze/fpga-builder": [
       "ice40"
