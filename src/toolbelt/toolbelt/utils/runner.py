@@ -47,6 +47,22 @@ class Runner:
             image_name, script, script_args,
             volumes=[(module_root_in_docker_host, '/module')])
 
+    def run_build_script_in_env(self, tb_config, module_config,
+                                module_root_in_docker_host, script_args):
+        script = "tools/build/build"
+        if "buildScript" in module_config:
+            script = module_config["buildScript"]
+
+        image_name = self._find_image_for_environment(module_config, 'build', tb_config)
+        self._print_info(image_name, script, tb_config)
+
+        # Try to get the latest builder image
+        self.docker.pull_no_fail(image_name)
+
+        self.docker.run_script_in_container(
+            tb_config['uid'], image_name, script, script_args,
+            volumes_from=[tb_config['container_id']])
+
     def _find_dir_for_script(self, module_config, script):
         # Expect script to be something like "tools/build/the-tool"
         parts = script.split('/')
