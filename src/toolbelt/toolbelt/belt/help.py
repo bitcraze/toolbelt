@@ -61,10 +61,14 @@ class Help:
         for tool in tb_config["tools"]:
             print("  " + ", ".join(tool.names) + " - " +
                   tool.short_description)
+
         print("")
-        print('Tools in the current module:')
-        for tool in tb_config['module_tools'].keys():
-            print("  " + tool)
+        if len(tb_config['module_tools']) > 0:
+            print('Tools in the current module:')
+            for tool in tb_config['module_tools'].keys():
+                print("  " + tool)
+        else:
+            print("No tools found in the current module")
 
         if not tb_config['config_ok']:
             print("")
