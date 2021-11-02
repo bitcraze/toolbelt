@@ -116,14 +116,15 @@ class RunnerTest(unittest.TestCase):
         self.assertEqual(currentDir, actual['module_root_in_docker_host'])
 
     def test_nr_of_module_tools_for_current_directory(self):
-        # Fixture
+        with patch.dict('os.environ', self.FULL_CONFIG):
+            # Fixture
 
-        # Test
-        actual = self.sut.get_tb_config(self.toolbelt_root,
-                                        self.extensions_mock)
+            # Test
+            actual = self.sut.get_tb_config(self.toolbelt_root,
+                                            self.extensions_mock)
 
-        # Assert
-        self.assertEqual([], actual['module_tools'])
+            # Assert
+            self.assertEqual([], actual['module_tools'])
 
     def test_nr_of_registered_tools(self):
         # Fixture
@@ -213,28 +214,30 @@ class RunnerTest(unittest.TestCase):
             self.assertEqual(self.ROOT_UID, actual['uid'])
 
     def test_module_tools_added(self):
-        # Fixture
-        expected = {"build": ["nr1", "nr2"], "build-docs": ["nr3"]}
-        self.bc_module_mock.enumerate_tools.return_value = expected
+        with patch.dict('os.environ', self.FULL_CONFIG):
+            # Fixture
+            expected = {"build": ["nr1", "nr2"], "build-docs": ["nr3"]}
+            self.bc_module_mock.enumerate_tools.return_value = expected
 
-        # Test
-        actual = self.sut.get_tb_config(self.toolbelt_root,
-                                        self.extensions_mock)
+            # Test
+            actual = self.sut.get_tb_config(self.toolbelt_root,
+                                            self.extensions_mock)
 
-        # Assert
-        self.assertEqual(expected, actual['module_tools'])
+            # Assert
+            self.assertEqual(expected, actual['module_tools'])
 
     def test_module_config_added(self):
         # Fixture
-        expected = {"some": "config"}
-        self.bc_module_mock.read_config.return_value = expected
+        with patch.dict('os.environ', self.FULL_CONFIG):
+            expected = {"some": "config"}
+            self.bc_module_mock.read_config.return_value = expected
 
-        # Test
-        actual = self.sut.get_tb_config(self.toolbelt_root,
-                                        self.extensions_mock)
+            # Test
+            actual = self.sut.get_tb_config(self.toolbelt_root,
+                                            self.extensions_mock)
 
-        # Assert
-        self.assertEqual(expected, actual['module_config'])
+            # Assert
+            self.assertEqual(expected, actual['module_config'])
 
     def test_config_ok_flag_is_set(self):
         # Fixture
