@@ -65,7 +65,8 @@ class ConfigReader:
 
         if tb_config['config_ok']:
             tb_config['module_config'] = self.bc_module.read_config(tb_config['module_root'])
-            tb_config['module_tools'] = self.bc_module.enumerate_tools(tb_config['module_root'], tb_config['module_config'])
+            tb_config['module_tools'] = self.bc_module.enumerate_tools(
+                tb_config['module_root'], tb_config['module_config'])
         else:
             tb_config['module_tools'] = {}
 
