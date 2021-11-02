@@ -5,7 +5,8 @@
       "python3",
       "arm-none-eabi",
       "sdcc",
-      "docker"
+      "docker",
+      "esp32"
     ],
     "bitcraze/web-builder": [
       "docker",
