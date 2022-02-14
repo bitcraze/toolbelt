@@ -1,0 +1,13 @@
+name: Release and push to docker hub
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build_and_push:
+    uses: bitcraze/workflows/.github/workflows/build_and_push_to_docker_hub.yml@f56829e722011752078d8728f6f97db6c51f133a
+    with:
+      image: bitcraze/toolbelt
+    secrets:
+      username: ${{ secrets.DOCKER_HUB_USERNAME }}
+      password: ${{ secrets.DOCKER_HUB_PASSWORD }}
