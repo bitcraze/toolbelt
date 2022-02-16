@@ -9,3 +9,6 @@ local system.
 
 The `docs` directory contains the source for the documentation. Either browse it directly (mark down), view it on [github](https://github.com/bitcraze/toolbelt/tree/master/docs)
 (fairly good render) or on our [web](https://www.bitcraze.io/documentation/repository/toolbelt/master/).
+
+## Contribute
+Go to the [contribute page](https://www.bitcraze.io/contribute/) on our website to learn more.
