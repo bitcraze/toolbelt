@@ -18,6 +18,9 @@
     ],
     "bitcraze/fpga-builder": [
       "ice40"
+    ],
+    "bitcraze/aideck": [
+      "gap8"
     ]
   }
 }
